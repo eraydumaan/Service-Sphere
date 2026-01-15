@@ -9,6 +9,8 @@ import MapPage from "@/pages/MapPage";
 import CreateListing from "@/pages/CreateListing";
 import Assistant from "@/pages/Assistant";
 import Settings from "@/pages/Settings";
+import Bookings from "@/pages/Bookings";
+import ListingDetail from "@/pages/ListingDetail";
 import MobileNav from "@/components/layout/MobileNav";
 
 function Router() {
@@ -19,6 +21,8 @@ function Router() {
       <Route path="/create" component={CreateListing} />
       <Route path="/assistant" component={Assistant} />
       <Route path="/settings" component={Settings} />
+      <Route path="/bookings" component={Bookings} />
+      <Route path="/listing/:id" component={ListingDetail} />
       <Route component={NotFound} />
     </Switch>
   );
