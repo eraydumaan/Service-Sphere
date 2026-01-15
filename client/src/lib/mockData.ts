@@ -1,12 +1,12 @@
-import { Car, Snowflake, Home, Briefcase, MapPin, Search } from "lucide-react";
+import { Car, Snowflake, Home, Briefcase } from "lucide-react";
 
 export type Category = {
   id: string;
   name: string;
   icon: any;
-  colorClass: string; // Tailwind class for text/bg
-  markerClass: string; // CSS class for map marker
-  gradient: string;
+  color: string;
+  markerColor: string;
+  description: string;
 };
 
 export type Listing = {
@@ -17,93 +17,93 @@ export type Listing = {
   address: string;
   date: string;
   image: string;
-  coordinates: [number, number]; // [lat, lng]
+  coordinates: [number, number];
+  rating: number;
+  reviews: number;
 };
 
 export const categories: Category[] = [
   { 
     id: "vehicle", 
-    name: "Araç Bakım", 
+    name: "Fahrzeugservice", 
     icon: Car, 
-    colorClass: "text-amber-500 bg-amber-50", 
-    markerClass: "marker-vehicle",
-    gradient: "from-amber-500 to-orange-500"
+    color: "hsl(45 93% 47%)",
+    markerColor: "#f59e0b",
+    description: "Reparatur & Pflege"
   },
   { 
     id: "home", 
-    name: "Ev Temizliği", 
+    name: "Hausreinigung", 
     icon: Home, 
-    colorClass: "text-emerald-500 bg-emerald-50", 
-    markerClass: "marker-home",
-    gradient: "from-emerald-500 to-teal-500"
+    color: "hsl(170 70% 40%)",
+    markerColor: "#10b981",
+    description: "Profi-Reinigung"
   },
   { 
     id: "winter", 
-    name: "Kış Hizmeti", 
+    name: "Winterdienst", 
     icon: Snowflake, 
-    colorClass: "text-purple-500 bg-purple-50", 
-    markerClass: "marker-winter",
-    gradient: "from-purple-500 to-indigo-500"
+    color: "hsl(270 50% 50%)",
+    markerColor: "#8b5cf6",
+    description: "Schneeräumung"
   },
   { 
     id: "office", 
-    name: "Ofis / Sınıf", 
+    name: "Büroservice", 
     icon: Briefcase, 
-    colorClass: "text-blue-500 bg-blue-50", 
-    markerClass: "marker-office",
-    gradient: "from-blue-500 to-cyan-500"
+    color: "hsl(210 80% 60%)",
+    markerColor: "#3b82f6",
+    description: "Business-Lösungen"
   },
 ];
 
 export const mockListings: Listing[] = [
   {
     id: "1",
-    title: "Detaylı Araç Temizliği",
+    title: "Premium Fahrzeugaufbereitung",
     category: "vehicle",
-    price: "₺500",
-    address: "Şişli, İstanbul",
-    date: "Bugün, 14:00",
-    image: "https://images.unsplash.com/photo-1601362840469-51e4d8d58785?w=800&auto=format&fit=crop&q=60&ixlib=rb-4.0.3",
-    coordinates: [41.0529, 28.9877],
+    price: "89 €",
+    address: "Berlin-Mitte",
+    date: "Heute, 14:00",
+    image: "https://images.unsplash.com/photo-1601362840469-51e4d8d58785?w=800&auto=format&fit=crop&q=60",
+    coordinates: [52.5200, 13.4050],
+    rating: 4.9,
+    reviews: 124
   },
   {
     id: "2",
-    title: "Günlük Ev Temizliği",
+    title: "Professionelle Hausreinigung",
     category: "home",
-    price: "₺1200",
-    address: "Kadıköy, İstanbul",
-    date: "Yarın, 09:00",
-    image: "https://images.unsplash.com/photo-1581578731117-104f2a417954?w=800&auto=format&fit=crop&q=60&ixlib=rb-4.0.3",
-    coordinates: [40.9829, 29.0277],
+    price: "35 €/Std",
+    address: "Hamburg-Eppendorf",
+    date: "Morgen, 09:00",
+    image: "https://images.unsplash.com/photo-1581578731117-104f2a417954?w=800&auto=format&fit=crop&q=60",
+    coordinates: [53.5511, 9.9937],
+    rating: 4.8,
+    reviews: 89
   },
   {
     id: "3",
-    title: "Kar Küreme Hizmeti",
+    title: "Schneeräumung & Streudienst",
     category: "winter",
-    price: "₺2000",
-    address: "Levent, İstanbul",
-    date: "17 Ocak, 07:00",
-    image: "https://images.unsplash.com/photo-1483664852095-d6cc6870705d?w=800&auto=format&fit=crop&q=60&ixlib=rb-4.0.3",
-    coordinates: [41.0776, 29.0135],
+    price: "150 €",
+    address: "München-Solln",
+    date: "17. Jan, 07:00",
+    image: "https://images.unsplash.com/photo-1483664852095-d6cc6870705d?w=800&auto=format&fit=crop&q=60",
+    coordinates: [48.1351, 11.5820],
+    rating: 5.0,
+    reviews: 45
   },
   {
     id: "4",
-    title: "Ofis Dezenfeksiyonu",
+    title: "IT-Büroreinigung Express",
     category: "office",
-    price: "₺3500",
-    address: "Maslak, İstanbul",
-    date: "Haftasonu",
-    image: "https://images.unsplash.com/photo-1616169123896-189f3152750d?w=800&auto=format&fit=crop&q=60&ixlib=rb-4.0.3",
-    coordinates: [41.1116, 29.0225],
-  },
-  {
-    id: "5",
-    title: "Lastik Değişimi",
-    category: "vehicle",
-    price: "₺800",
-    address: "Ümraniye, İstanbul",
-    date: "Bugün, 16:30",
-    image: "https://images.unsplash.com/photo-1596720165922-29e843c08b5e?w=800&auto=format&fit=crop&q=60&ixlib=rb-4.0.3",
-    coordinates: [41.0256, 29.1130],
+    price: "240 €",
+    address: "Frankfurt am Main",
+    date: "Wochenende",
+    image: "https://images.unsplash.com/photo-1616169123896-189f3152750d?w=800&auto=format&fit=crop&q=60",
+    coordinates: [50.1109, 8.6821],
+    rating: 4.7,
+    reviews: 67
   }
 ];
