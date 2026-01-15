@@ -1,116 +1,77 @@
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import { mockListings, categories } from "@/lib/mockData";
-import { Link } from "wouter";
 import L from 'leaflet';
 import { useEffect, useState } from 'react';
 import "leaflet/dist/leaflet.css";
-
-// Fix Leaflet default icon issue
-import icon from 'leaflet/dist/images/marker-icon.png';
-import iconShadow from 'leaflet/dist/images/marker-shadow.png';
-
-let DefaultIcon = L.icon({
-    iconUrl: icon,
-    shadowUrl: iconShadow,
-    iconSize: [25, 41],
-    iconAnchor: [12, 41]
-});
-L.Marker.prototype.options.icon = DefaultIcon;
-
-// Custom colored markers function
-const createCustomIcon = (color: string) => {
-  return L.divIcon({
-    className: 'custom-div-icon',
-    html: `<div style="background-color: ${color};" class="marker-pin"></div><i class="material-icons"></i>`,
-    iconSize: [30, 42],
-    iconAnchor: [15, 42]
-  });
-};
+import { Star, MapPin, Navigation, Compass } from "lucide-react";
 
 export default function MapPage() {
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
     setMounted(true);
-    // Custom CSS for marker pin
-    const style = document.createElement('style');
-    style.innerHTML = `
-      .marker-pin {
-        width: 30px;
-        height: 30px;
-        border-radius: 50% 50% 50% 0;
-        position: absolute;
-        transform: rotate(-45deg);
-        left: 50%;
-        top: 50%;
-        margin: -15px 0 0 -15px;
-        animation: bounce 0.5s;
-      }
-      .marker-pin::after {
-          content: '';
-          width: 14px;
-          height: 14px;
-          margin: 8px 0 0 8px;
-          background: #fff;
-          position: absolute;
-          border-radius: 50%;
-      }
-      .custom-div-icon i {
-          position: absolute;
-          width: 22px;
-          font-size: 22px;
-          left: 0;
-          right: 0;
-          margin: 10px auto;
-          text-align: center;
-      }
-    `;
-    document.head.appendChild(style);
   }, []);
 
-  if (!mounted) return <div className="h-screen flex items-center justify-center bg-gray-50 text-gray-400">Harita Yükleniyor...</div>;
+  if (!mounted) return <div className="h-screen flex items-center justify-center bg-gray-900 text-white font-bold tracking-widest uppercase">System wird geladen...</div>;
 
   return (
-    <div className="h-screen w-full relative pb-20">
-      <div className="absolute top-4 left-4 right-4 z-[400]">
-        <div className="bg-white/90 backdrop-blur-md rounded-2xl p-4 shadow-lg border border-white/20">
-          <h1 className="font-bold text-gray-900 text-lg mb-2">Hizmet Haritası</h1>
-          <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide">
+    <div className="h-screen w-full relative pb-20 overflow-hidden">
+      {/* Dynamic Header Overlay */}
+      <div className="absolute top-6 left-6 right-6 z-[1000] flex flex-col gap-4">
+        <div className="bg-white/80 backdrop-blur-2xl rounded-[2rem] p-6 shadow-2xl border border-white/20">
+          <div className="flex justify-between items-center mb-4">
+            <div>
+              <h1 className="font-black text-gray-900 text-xl tracking-tight">Hizmet<span className="text-primary">Pro</span> Map</h1>
+              <p className="text-xs text-gray-500 font-medium">Verifizierte Dienstleister in Echtzeit</p>
+            </div>
+            <div className="w-12 h-12 bg-gray-900 rounded-2xl flex items-center justify-center text-white shadow-xl">
+              <Compass className="w-6 h-6 animate-pulse" />
+            </div>
+          </div>
+          
+          <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-hide">
              {categories.map(cat => (
-               <div key={cat.id} className="flex items-center gap-1 shrink-0 bg-white border border-gray-100 px-2 py-1 rounded-full shadow-sm">
-                 <div className={`w-3 h-3 rounded-full ${cat.colorClass.split(' ')[0].replace('text-', 'bg-')}`}></div>
-                 <span className="text-xs font-medium text-gray-600">{cat.name}</span>
-               </div>
+               <button key={cat.id} className="flex items-center gap-2 shrink-0 bg-white border border-gray-100 px-4 py-2 rounded-2xl shadow-sm hover:shadow-md transition-all active:scale-95 group">
+                 <div className="w-2 h-2 rounded-full" style={{ backgroundColor: cat.markerColor }}></div>
+                 <span className="text-[10px] font-black text-gray-700 uppercase tracking-widest group-hover:text-primary transition-colors">{cat.name}</span>
+               </button>
              ))}
           </div>
         </div>
       </div>
 
+      {/* Floating Action Buttons */}
+      <div className="absolute bottom-32 right-6 z-[1000] flex flex-col gap-4">
+        <button className="w-14 h-14 bg-white rounded-2xl shadow-2xl flex items-center justify-center text-gray-900 hover:bg-gray-50 active:scale-95 transition-all border border-gray-100">
+          <Navigation className="w-6 h-6" />
+        </button>
+      </div>
+
       <MapContainer 
-        center={[41.0082, 28.9784]} 
-        zoom={11} 
+        center={[52.5200, 13.4050]} 
+        zoom={12} 
         style={{ height: "100%", width: "100%" }}
         zoomControl={false}
       >
         <TileLayer
-          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+          attribution='&copy; CARTO'
           url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png"
         />
         {mockListings.map((listing) => {
           const cat = categories.find(c => c.id === listing.category);
-          // Extract HSL value from CSS var or use fallback
-          // For simplicity in this mock, mapping known colors
-          let color = "#3b82f6";
-          if(listing.category === 'vehicle') color = "#f59e0b"; // amber
-          if(listing.category === 'home') color = "#10b981"; // emerald
-          if(listing.category === 'winter') color = "#8b5cf6"; // purple
-          if(listing.category === 'office') color = "#3b82f6"; // blue
-
+          
           const icon = L.divIcon({
             className: 'custom-div-icon',
-            html: `<div style="background-color: ${color};" class="marker-pin"></div>`,
-            iconSize: [30, 42],
-            iconAnchor: [15, 42]
+            html: `
+              <div class="relative group">
+                <div class="absolute -inset-2 bg-${listing.category === 'vehicle' ? 'amber' : listing.category === 'home' ? 'emerald' : 'indigo'}-500/20 rounded-full blur-md opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                <div style="background-color: ${cat?.markerColor};" class="w-10 h-10 rounded-2xl border-4 border-white shadow-2xl flex items-center justify-center transform transition-transform group-hover:scale-110 group-hover:-translate-y-1">
+                  <div class="w-2 h-2 bg-white rounded-full"></div>
+                </div>
+              </div>
+            `,
+            iconSize: [40, 40],
+            iconAnchor: [20, 20]
           });
 
           return (
@@ -119,23 +80,47 @@ export default function MapPage() {
               position={listing.coordinates}
               icon={icon}
             >
-              <Popup className="custom-popup">
-                <div className="p-1 min-w-[200px]">
-                  <div className="h-24 w-full rounded-lg overflow-hidden mb-2">
+              <Popup className="premium-popup">
+                <div className="w-64 overflow-hidden rounded-3xl">
+                  <div className="h-32 w-full relative">
                     <img src={listing.image} className="w-full h-full object-cover" />
+                    <div className="absolute top-2 right-2 bg-white/90 px-2 py-1 rounded-lg flex items-center gap-1 shadow-md">
+                      <Star className="w-3 h-3 text-amber-500 fill-amber-500" />
+                      <span className="text-[10px] font-black">{listing.rating}</span>
+                    </div>
                   </div>
-                  <span className={`text-[10px] font-bold px-2 py-0.5 rounded ${cat?.colorClass} mb-1 inline-block`}>
-                    {cat?.name}
-                  </span>
-                  <h3 className="font-bold text-sm mb-1">{listing.title}</h3>
-                  <p className="text-primary font-bold">{listing.price}</p>
-                  <p className="text-xs text-gray-500 mt-1">{listing.address}</p>
+                  <div className="p-4 bg-white">
+                    <span className="text-[10px] font-black text-primary uppercase tracking-widest block mb-1">
+                      {cat?.name}
+                    </span>
+                    <h3 className="font-bold text-gray-900 text-sm mb-2">{listing.title}</h3>
+                    <div className="flex justify-between items-center mt-3 pt-3 border-t border-gray-50">
+                      <p className="text-gray-900 font-black">{listing.price}</p>
+                      <button className="bg-gray-900 text-white text-[9px] font-black px-3 py-1.5 rounded-lg">DETAILS</button>
+                    </div>
+                  </div>
                 </div>
               </Popup>
             </Marker>
           );
         })}
       </MapContainer>
+
+      <style>{`
+        .leaflet-popup-content-wrapper {
+          padding: 0;
+          overflow: hidden;
+          border-radius: 2rem;
+          box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+        }
+        .leaflet-popup-content {
+          margin: 0;
+          width: 256px !important;
+        }
+        .leaflet-popup-tip-container {
+          display: none;
+        }
+      `}</style>
     </div>
   );
 }
