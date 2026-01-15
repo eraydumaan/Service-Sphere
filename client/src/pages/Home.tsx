@@ -1,8 +1,9 @@
 import { useState } from "react";
 import { mockListings, categories } from "@/lib/mockData";
-import { MapPin, Star, Search, Bell, SlidersHorizontal, ShieldCheck } from "lucide-react";
+import { MapPin, Star, Search, Bell, SlidersHorizontal, ShieldCheck, CheckCircle2 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { motion, AnimatePresence } from "framer-motion";
+import { Link } from "wouter";
 
 export default function Home() {
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
@@ -89,6 +90,32 @@ export default function Home() {
         </div>
       </div>
 
+      {/* Trust Section */}
+      <div className="px-6 mt-10 max-w-xl mx-auto">
+        <div className="bg-white rounded-[2.5rem] p-8 shadow-xl shadow-gray-200/50 border border-gray-100 relative overflow-hidden group">
+          <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-full blur-3xl group-hover:bg-primary/10 transition-colors" />
+          <div className="flex gap-4 items-center mb-6">
+            <div className="w-14 h-14 bg-blue-50 rounded-2xl flex items-center justify-center text-primary">
+              <ShieldCheck className="w-8 h-8" />
+            </div>
+            <div>
+              <h3 className="text-xl font-black text-gray-900 tracking-tight">100% Sicherer Service</h3>
+              <p className="text-xs text-gray-500 font-medium">Ihre Sicherheit ist unsere Priorität</p>
+            </div>
+          </div>
+          <div className="grid grid-cols-2 gap-4">
+            <div className="flex items-center gap-2">
+              <CheckCircle2 className="w-4 h-4 text-green-500" />
+              <span className="text-[10px] font-black text-gray-800 uppercase tracking-widest">Haftpflichtversichert</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <CheckCircle2 className="w-4 h-4 text-green-500" />
+              <span className="text-[10px] font-black text-gray-800 uppercase tracking-widest">Verifizierte Profis</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <div className="px-6 mt-10 max-w-xl mx-auto">
         <div className="flex justify-between items-end mb-6">
           <div>
@@ -101,15 +128,15 @@ export default function Home() {
         <div className="grid gap-6">
           <AnimatePresence mode="popLayout">
             {filteredListings.map((listing, index) => (
-              <motion.div
-                key={listing.id}
-                layout
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, scale: 0.9 }}
-                transition={{ delay: index * 0.1 }}
-                className="bg-white rounded-[2rem] overflow-hidden shadow-sm hover:shadow-xl transition-all duration-500 border border-gray-100 group cursor-pointer"
-              >
+              <Link key={listing.id} href={`/listing/${listing.id}`}>
+                <motion.div
+                  layout
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, scale: 0.9 }}
+                  transition={{ delay: index * 0.1 }}
+                  className="bg-white rounded-[2rem] overflow-hidden shadow-sm hover:shadow-xl transition-all duration-500 border border-gray-100 group cursor-pointer"
+                >
                 <div className="relative h-48 overflow-hidden">
                   <img 
                     src={listing.image} 
@@ -145,6 +172,7 @@ export default function Home() {
                   </h4>
                 </div>
               </motion.div>
+            </Link>
             ))}
           </AnimatePresence>
         </div>
